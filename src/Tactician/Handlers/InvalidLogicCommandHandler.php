@@ -1,5 +1,6 @@
-<?php namespace Santore\Tactician;
+<?php namespace Santore\Tactician\Handlers;
 
+use Santore\Tactician\Commands\InvalidLogicCommand;
 use Santore\Tactician\Exceptions\DomainException;
 
 class InvalidLogicCommandHandler

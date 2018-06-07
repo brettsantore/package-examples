@@ -8,10 +8,10 @@ use League\Tactician\Handler\Locator\InMemoryLocator;
 use League\Tactician\Handler\MethodNameInflector\HandleInflector;
 use League\Tactician\Plugins\LockingMiddleware;
 use Santore\Tactician\Exceptions\DomainException;
-use Santore\Tactician\InvalidLogicCommand;
-use Santore\Tactician\InvalidLogicCommandHandler;
-use Santore\Tactician\SayHelloCommand;
-use Santore\Tactician\SayHelloCommandHandler;
+use Santore\Tactician\Commands\InvalidLogicCommand;
+use Santore\Tactician\Handlers\InvalidLogicCommandHandler;
+use Santore\Tactician\Commands\SayHelloCommand;
+use Santore\Tactician\Handlers\SayHelloCommandHandler;
 
 class CommandBusTest extends TestCase
 {

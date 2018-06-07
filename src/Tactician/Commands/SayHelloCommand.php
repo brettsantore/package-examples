@@ -1,4 +1,4 @@
-<?php namespace Santore\Tactician;
+<?php namespace Santore\Tactician\Commands;
 
 class SayHelloCommand
 {
