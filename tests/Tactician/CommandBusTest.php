@@ -7,6 +7,9 @@ use League\Tactician\Handler\CommandNameExtractor\ClassNameExtractor;
 use League\Tactician\Handler\Locator\InMemoryLocator;
 use League\Tactician\Handler\MethodNameInflector\HandleInflector;
 use League\Tactician\Plugins\LockingMiddleware;
+use Santore\Tactician\Exceptions\DomainException;
+use Santore\Tactician\InvalidLogicCommand;
+use Santore\Tactician\InvalidLogicCommandHandler;
 use Santore\Tactician\SayHelloCommand;
 use Santore\Tactician\SayHelloCommandHandler;
 
@@ -17,11 +20,53 @@ class CommandBusTest extends TestCase
      */
     public function create_a_simple_hello_world_command()
     {
+        $command_bus = $this->createBus([
+            SayHelloCommand::class => new SayHelloCommandHandler(),
+        ]);
+
+        $actual = $command_bus->handle(new SayHelloCommand('World'));
+
+        $this->assertEquals($actual, 'Hello, World!');
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \Santore\Tactician\Exceptions\DomainException
+     * @expectedExceptionMessage There has been a problem
+     */
+    public function commands_successfully_throw_exceptions()
+    {
+        $this->createBus([
+            InvalidLogicCommand::class => new InvalidLogicCommandHandler(),
+        ])->handle(new InvalidLogicCommand());
+    }
+
+    /**
+     * @test
+     */
+    public function handle_thrown_exception()
+    {
+        try {
+            $this->createBus([
+                InvalidLogicCommand::class => new InvalidLogicCommandHandler(),
+            ])->handle(new InvalidLogicCommand());
+        } catch (DomainException $exception) {
+            // continue with script execution
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * @param array $command_class_to_handler_map
+     *
+     * @return CommandBus
+     */
+    protected function createBus(array $command_class_to_handler_map): CommandBus
+    {
         $handlerMiddleware = new CommandHandlerMiddleware(
             new ClassNameExtractor(),
-            new InMemoryLocator([
-                SayHelloCommand::class => new SayHelloCommandHandler(),
-            ]),
+            new InMemoryLocator($command_class_to_handler_map),
             new HandleInflector()
         );
 
@@ -30,8 +75,6 @@ class CommandBusTest extends TestCase
             $handlerMiddleware,
         ]);
 
-        $actual = $command_bus->handle(new SayHelloCommand('World'));
-
-        $this->assertEquals($actual, 'Hello, World!');
+        return $command_bus;
     }
 }
