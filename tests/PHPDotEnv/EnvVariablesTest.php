@@ -12,7 +12,9 @@ class EnvVariablesTest extends TestCase
     public function initialization_enables_access_to_environment_variables()
     {
         /**
-         * This file is would typically be .env, and would never be committed to you VCS
+         * PLEASE NOTE:
+         * This test completely removes the added benefits of this package because it exposes the what we were trying
+         * to hide. This test is solely to demonstrate how the package works
          */
         $example_file   = '.env_example';
 
